@@ -1,27 +1,62 @@
-# Getting Started
+### 1.Create a new project with the CDS cli.
 
-    namespace my.event;
-    using { Country ,managed} from '@sap/cds/common';
+` cds init competition-corner`
 
-    entity Competition : managed {
-        key ID          : Integer;
-            name        : String;
-            type: String;
-            description : String;
-            city   : String;
-            country: Country;
-            user: Association to User;
-    }
+### 2. Create  data model 
 
+Create a new file called 'data-model.cds' in the /db folder.
 
-    entity User: managed {
-        key ID : Integer;
-        firstName: String;
-        lastName: String;
-        age: Integer;
-        city: String;
-        country: Country;
-        
-        competition: Association to many Competition on competition.user =$self;
+``` 
+namespace my.event;
+using { Country ,managed} from '@sap/cds/common';  // import reuse packages that are already provided by the framework
 
+entity Competition : managed { //administrative fields provided by the cds 
+    key ID          : Integer;
+        name        : String;
+        type: String;
+        description : String;
+        city   : String;
+        country: Country;  // reuse type from common packages 
+        user: Association to User; // namaged association without a manual foreign key.
 }
+
+
+entity User: managed {
+    key ID : Integer;
+    firstName: String;
+    lastName: String;
+    age: Integer;
+    city: String;
+    country: Country;
+    
+    competition: Association to many Competition on competition.user =$self;
+}
+```
+
+### 3.Create a service definition
+
+Create a new file in the /srv folder called 'competition-service.cds'.
+
+```
+using my.event as my from '../db/data-model';
+
+service CompetitionService {
+     entity Competition as projection on my.Competition;
+     entity User as projection on my.User;
+}
+
+```
+
+### 4. Deploy the service to a persistence layer
+
+The OData service has no storage, so we will install a local SQLite DB as a first step.
+
+``` npm install -D sqlite3```
+
+After deploy the data model and service definition to a new SQLite-based database.
+
+``` cds deploy --to sqlite:competition-corner-demo.db ```
+
+Explore the database with the command :
+
+```sqlite3 competition-corner.db```
