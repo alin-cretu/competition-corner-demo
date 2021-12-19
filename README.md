@@ -1,25 +1,27 @@
 # Getting Started
 
-Welcome to your new project.
+    namespace my.event;
+    using { Country ,managed} from '@sap/cds/common';
 
-It contains these folders and files, following our recommended project layout:
-
-File or Folder | Purpose
----------|-`---------
-`app/` | content for UI frontends goes here
-`db/` | your domain models and data go here
-`srv/` | your service models and code go here
-`package.json` | project metadata and configuration
-`readme.md` | this getting started guide
-
-
-## Next Steps
-
-- Open a new terminal and run `cds watch` 
-- (in VS Code simply choose _**Terminal** > Run Task > cds watch_)
-- Start adding content, for example, a [db/schema.cds](db/schema.cds).
+    entity Competition : managed {
+        key ID          : Integer;
+            name        : String;
+            type: String;
+            description : String;
+            city   : String;
+            country: Country;
+            user: Association to User;
+    }
 
 
-## Learn More
+    entity User: managed {
+        key ID : Integer;
+        firstName: String;
+        lastName: String;
+        age: Integer;
+        city: String;
+        country: Country;
+        
+        competition: Association to many Competition on competition.user =$self;
 
-Learn more at https://cap.cloud.sap/docs/get-started/.
+}
