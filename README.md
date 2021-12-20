@@ -60,3 +60,32 @@ After deploy the data model and service definition to a new SQLite-based databas
 Explore the database with the command :
 
 ```sqlite3 competition-corner.db```
+
+### 5. Connect the SQLTools from SAP BAS to the the local SQLite DB.
+
+File>Preferences>Open Preferences >sqltools > connections
+
+### 6. Insert a new competition from BAS http plug-in.
+
+```
+### Insert a new competition
+POST http://localhost:4004/competition/Competition
+Content-Type: application/json
+
+{
+"ID": 10,
+"name": "Roma Marathon",
+"type": "Running Competition",
+"description": "The biggest running marathon from Italy",
+"city": "Roma",
+"country": "Italy",
+"user_ID": null
+}
+
+### List all competitions
+GET http://localhost:4004/competition/Competition
+
+```
+
+### 7. Deploy to Hana Cloud.
+

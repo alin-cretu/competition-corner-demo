@@ -1,0 +1,16 @@
+### Insert a new competition
+POST http://localhost:4004/competition/Competition
+Content-Type: application/json
+
+{
+"ID": 10,
+"name": "Roma Marathon",
+"type": "Running Competition",
+"description": "The biggest running marathon from Italy",
+"city": "Roma",
+"country": "Italy",
+"user_ID": null
+}
+
+### List all competitions
+GET http://localhost:4004/competition/Competition
