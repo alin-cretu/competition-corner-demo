@@ -13,7 +13,8 @@
   "devDependencies": {
     "@sap/hdi-deploy": "^4.2.3",
     "@sap/ux-specification": "^1.96.0",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "@sap/hana-client": "2.8.20"
   },
   "scripts": {
     "start": "cds run"
@@ -46,11 +47,8 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sqlite",
-        "model": "*",
-        "credentials": {
-          "database": "competition-corner-demo.db"
-        }
+        "kind": "sql",
+        "model": "*"
       }
     },
     "hana": {

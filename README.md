@@ -6,7 +6,7 @@
 
 Create a new file called 'data-model.cds' in the /db folder.
 
-``` 
+```cds 
 namespace my.event;
 
 using {
@@ -79,7 +79,7 @@ Deploy to the BD wit 'CDS deploy'.
 
 ### 7. Insert a new competition from BAS http plug-in.
 
-```
+```json
 ### Insert a new competition
 POST http://localhost:4004/competition/Competition
 Content-Type: application/json
@@ -100,7 +100,7 @@ GET http://localhost:4004/competition/Competition
 ```
 
 ### 8. Insert a new user from BAS http plug-in.
-```
+```json
 ### Get all users
 GET http://localhost:4004/competition/User
 
@@ -124,7 +124,8 @@ You can define as many services on the same data model as you need, either in th
 
 In the data-model.cds create a new entity:
 
-```
+```cds
+
 entity Registrations:cuid,managed { //administrative fields provided by the cds
     competition: Association to Competitions;
     user: Association to  Users;
@@ -133,7 +134,8 @@ entity Registrations:cuid,managed { //administrative fields provided by the cds
 ```
 Add a new service definition:
 
-```
+```cds
+
 entity Registrations as projection on my.Registrations
 
 ```
@@ -141,7 +143,7 @@ Deploy the chages to the DB.
 
 Add a registration with the BAS http plug-in.
 
-```
+```json
 ### Create a competition registration
 POST http://localhost:4004/competition/Registrations
 Content-Type: application/json
@@ -161,6 +163,8 @@ Create a 'competition-service.js' in the srv folder.
 
 ### 11. Deploy to Hana Cloud.
 
+
+
 When you’re moving from the development phase to the production phase, use SAP HANA Cloud as your database.
 
 Add support for Hana with 'cds add hana' command.
@@ -170,6 +174,10 @@ This configures deployment for SAP HANA to use the hdbtable and hdbview formats.
 Add the mta.yaml file with the command 'cds add mta'
 
 Build the application archive with command 'mbt build'
+
+Update the mta.yaml file  with 'cds add mta --force'
+
+cf deploy mta_archives/competition-corner-demo_1.0.0.mtar
 
 ### 12. Add the UI layer
 

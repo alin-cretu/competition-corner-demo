@@ -9,22 +9,22 @@ annotate service.Competitions with @(
         },
         {
             $Type : 'UI.DataField',
-            Label : 'name',
+            Label : 'Name',
             Value : name,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'type',
+            Label : 'Type',
             Value : type,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'description',
+            Label : 'Description',
             Value : description,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'city',
+            Label : 'City',
             Value : city,
         },
     ]
