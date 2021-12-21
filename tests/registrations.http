@@ -1,0 +1,8 @@
+### Create a competition registration
+POST http://localhost:4004/competition/Registrations
+Content-Type: application/json
+
+{
+"competition_ID": 1 ,
+"user_ID":1
+}

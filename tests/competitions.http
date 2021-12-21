@@ -9,8 +9,11 @@ Content-Type: application/json
 "description": "The biggest running marathon from Italy",
 "city": "Roma",
 "country": "Italy",
-"user_ID": null
+"user_ID": 1
 }
 
 ### List all competitions
 GET http://localhost:4004/competition/Competition
+
+### Delete a competition
+DELETE http://localhost:4004/competition/Competition/10

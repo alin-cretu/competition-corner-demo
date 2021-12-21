@@ -1,22 +1,22 @@
 namespace my.event;
 
 using {
-    
+    cuid,
     managed
 } from '@sap/cds/common'; // import reuse packages that are already provided by the framework
 
-entity Competition : managed { //administrative fields provided by the cds
+entity Competitions { 
     key ID          : Integer;
         name        : String;
         type        : String;
         description : String;
         city        : String;
-        country     : String; 
-        user        : Association to User; // namaged association without a manual foreign key.
+        country     : String;
+        user        : Association to many Users ; // namaged association without a manual foreign key.
 }
 
 
-entity User : managed {
+entity Users {
     key ID          : Integer;
         firstName   : String;
         lastName    : String;
@@ -24,6 +24,16 @@ entity User : managed {
         city        : String;
         country     : String;
 
-        competition : Association to many Competition
+        competition : Association to many Competitions
                           on competition.user = $self;
+}
+
+entity Registrations:cuid,managed { //administrative fields provided by the cds
+    competition: Association to Competitions;
+    user: Association to  Users;
+}
+
+entity Stats : cuid {
+    user        : Association to Users;
+    competition : Association to Competitions;
 }

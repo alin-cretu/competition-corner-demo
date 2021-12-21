@@ -8,29 +8,35 @@ Create a new file called 'data-model.cds' in the /db folder.
 
 ``` 
 namespace my.event;
-using { Country ,managed} from '@sap/cds/common';  // import reuse packages that are already provided by the framework
 
-entity Competition : managed { //administrative fields provided by the cds 
+using {
+    cuid,
+    managed
+} from '@sap/cds/common'; // import reuse packages that are already provided by the framework
+
+entity Competitions { 
     key ID          : Integer;
         name        : String;
-        type: String;
+        type        : String;
         description : String;
-        city   : String;
-        country: Country;  // reuse type from common packages 
-        user: Association to User; // namaged association without a manual foreign key.
+        city        : String;
+        country     : String;
+        user        : Association to many Users ; // namaged association without a manual foreign key.
 }
 
 
-entity User: managed {
-    key ID : Integer;
-    firstName: String;
-    lastName: String;
-    age: Integer;
-    city: String;
-    country: Country;
-    
-    competition: Association to many Competition on competition.user =$self;
+entity Users {
+    key ID          : Integer;
+        firstName   : String;
+        lastName    : String;
+        age         : Integer;
+        city        : String;
+        country     : String;
+
+        competition : Association to many Competitions
+                          on competition.user = $self;
 }
+
 ```
 
 ### 3.Create a service definition
@@ -40,10 +46,10 @@ Create a new file in the /srv folder called 'competition-service.cds'.
 ```
 using my.event as my from '../db/data-model';
 
-service CompetitionService {
-     entity Competition as projection on my.Competition;
-     entity User as projection on my.User;
-}
+service CompetitionService { // a service is a http endpoit. The visible part of an OData service.
+    entity Competition   as projection on my.Competitions;
+    entity User          as projection on my.Users;
+    }
 
 ```
 
@@ -65,7 +71,13 @@ Explore the database with the command :
 
 File>Preferences>Open Preferences >sqltools > connections
 
-### 6. Insert a new competition from BAS http plug-in.
+### 6. Load data from CSV files
+
+Create a new folder in the /db folder called /data.
+Create the CSV files based on the naming conventions.
+Deploy to the BD wit 'CDS deploy'.
+
+### 7. Insert a new competition from BAS http plug-in.
 
 ```
 ### Insert a new competition
@@ -87,5 +99,70 @@ GET http://localhost:4004/competition/Competition
 
 ```
 
+### 8. Insert a new user from BAS http plug-in.
+```
+### Get all users
+GET http://localhost:4004/competition/User
+
+### Add a new User
+
+POST http://localhost:4004/competition/User
+Content-Type: application/json
+
+{
+"ID":20,
+"firstName":"Ion",
+"lastName":"Popescu",
+"age": 20,
+"city":"Bucuresti",
+"country":"Romania"
+}
+```
+### 9. Defining a second service
+I will create a second service that sits on top of the same data model.
+You can define as many services on the same data model as you need, either in the same service definition file, or in separate files.
+
+In the data-model.cds create a new entity:
+
+```
+entity Registrations:cuid,managed { //administrative fields provided by the cds
+    competition: Association to Competitions;
+    user: Association to  Users;
+}
+
+```
+Add a new service definition:
+
+```
+entity Registrations as projection on my.Registrations
+
+```
+Deploy the chages to the DB.
+
+Add a registration with the BAS http plug-in.
+
+```
+### Create a competition registration
+POST http://localhost:4004/competition/Registrations
+Content-Type: application/json
+
+{
+"competition_ID": 1 ,
+"user_ID":1
+}
+
+```
+
+### 9.Common Types & Aspects @sap/cds/common
+
 ### 7. Deploy to Hana Cloud.
 
+When you’re moving from the development phase to the production phase, use SAP HANA Cloud as your database.
+
+Add support for Hana with 'cds add hana' command.
+
+This configures deployment for SAP HANA to use the hdbtable and hdbview formats.
+
+Add the mta.yaml file with the command 'cds add mta'
+
+Build the application archive with command 'mbt build'

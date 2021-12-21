@@ -12,5 +12,12 @@
     "eslint.nodePath": "/home/user/.node_modules_global/lib/node_modules/@sap/cds-dk/node_modules",
     "eslint.options": {
         "configFile": "/home/user/.node_modules_global/lib/node_modules/@sap/cds-dk/lib/lint/.eslintrc.js"
-    }
+    },
+    "sqltools.connections": [
+        {
+            "dialect": "SQLite",
+            "name": "competition-corner-demo.db",
+            "database": "/home/user/projects/competition-corner-demo"
+        }
+    ]
 }
