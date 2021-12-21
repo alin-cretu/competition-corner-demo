@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@sap/hdi-deploy": "^4.2.3",
+    "@sap/ux-specification": "^1.96.0",
     "sqlite3": "^5.0.2"
   },
   "scripts": {

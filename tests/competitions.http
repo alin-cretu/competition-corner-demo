@@ -1,5 +1,5 @@
 ### Insert a new competition
-POST http://localhost:4004/competition/Competition
+POST http://localhost:4004/competition/Competitions
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### List all competitions
-GET http://localhost:4004/competition/Competition
+GET http://localhost:4004/competition/Competitions
 
 ### Delete a competition
 DELETE http://localhost:4004/competition/Competition/10

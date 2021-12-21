@@ -153,9 +153,13 @@ Content-Type: application/json
 
 ```
 
+### 10. Add custom logic
+
+Create a 'competition-service.js' in the srv folder.
+
 ### 9.Common Types & Aspects @sap/cds/common
 
-### 7. Deploy to Hana Cloud.
+### 11. Deploy to Hana Cloud.
 
 When you’re moving from the development phase to the production phase, use SAP HANA Cloud as your database.
 
@@ -166,3 +170,7 @@ This configures deployment for SAP HANA to use the hdbtable and hdbview formats.
 Add the mta.yaml file with the command 'cds add mta'
 
 Build the application archive with command 'mbt build'
+
+### 12. Add the UI layer
+
+Add an UI layer using the Fiori Template.
