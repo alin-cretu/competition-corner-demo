@@ -16,8 +16,8 @@
     "sqltools.connections": [
         {
             "dialect": "SQLite",
-            "name": "competition-corner-demo.db",
-            "database": "/home/user/projects/competition-corner-demo"
+            "name": "competition-corner-demo",
+            "database": "/home/user/projects/competition-corner-demo/competition-corner-demo.db"
         }
     ]
 }

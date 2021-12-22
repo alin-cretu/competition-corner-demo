@@ -1,12 +1,12 @@
-### 1.Create a new project with the CDS cli.
+### 1.Create a new project using the CAP Template.
 
-` cds init competition-corner`
+run 'npm install'
 
-### 2. Create  data model 
+### 2. Create data model
 
 Create a new file called 'data-model.cds' in the /db folder.
 
-```cds 
+```cds
 namespace my.event;
 
 using {
@@ -14,14 +14,14 @@ using {
     managed
 } from '@sap/cds/common'; // import reuse packages that are already provided by the framework
 
-entity Competitions { 
+entity Competitions {
     key ID          : Integer;
         name        : String;
         type        : String;
         description : String;
         city        : String;
         country     : String;
-        user        : Association to many Users ; // namaged association without a manual foreign key.
+        user        : Association to Users // CAP uses Associations to capture relationships between entities.
 }
 
 
@@ -53,29 +53,30 @@ service CompetitionService { // a service is a http endpoit. The visible part of
 
 ```
 
-### 4. Deploy the service to a persistence layer
+### 4. Load data from CSV files
 
-The OData service has no storage, so we will install a local SQLite DB as a first step.
+Create a new folder in the /db folder called /data. Create the CSV files based
+on the naming conventions. 
 
-``` npm install -D sqlite3```
 
-After deploy the data model and service definition to a new SQLite-based database.
+### 5. Deploy the service to a persistence layer
 
-``` cds deploy --to sqlite:competition-corner-demo.db ```
+The OData service has no storage, so we will install a local SQLite DB as a
+first step.
+
+
+After deploy the data model and service definition to a new SQLite-based
+database.
+
+`cds deploy --to sqlite:competition-corner-demo.db`
 
 Explore the database with the command :
 
-```sqlite3 competition-corner.db```
+`sqlite3 competition-corner.db`
 
-### 5. Connect the SQLTools from SAP BAS to the the local SQLite DB.
+### 6. Connect the SQLTools from SAP BAS to the the local SQLite DB.
 
 File>Preferences>Open Preferences >sqltools > connections
-
-### 6. Load data from CSV files
-
-Create a new folder in the /db folder called /data.
-Create the CSV files based on the naming conventions.
-Deploy to the BD wit 'CDS deploy'.
 
 ### 7. Insert a new competition from BAS http plug-in.
 
@@ -100,6 +101,7 @@ GET http://localhost:4004/competition/Competition
 ```
 
 ### 8. Insert a new user from BAS http plug-in.
+
 ```json
 ### Get all users
 GET http://localhost:4004/competition/User
@@ -118,27 +120,37 @@ Content-Type: application/json
 "country":"Romania"
 }
 ```
+
 ### 9. Defining a second service
-I will create a second service that sits on top of the same data model.
-You can define as many services on the same data model as you need, either in the same service definition file, or in separate files.
+
+I will create a second service that sits on top of the same data model. You can
+define as many services on the same data model as you need, either in the same
+service definition file, or in separate files.
 
 In the data-model.cds create a new entity:
 
 ```cds
 
-entity Registrations:cuid,managed { //administrative fields provided by the cds
+entity Registrations:cuid,managed, temporal { //administrative fields provided by the cds
     competition: Association to Competitions;
     user: Association to  Users;
 }
 
 ```
+
 Add a new service definition:
 
 ```cds
 
-entity Registrations as projection on my.Registrations
+using my.event as my from '../db/data-model';
+
+service RegistrationService{
+entity Registration as projection on my.Registrations
+}
+
 
 ```
+
 Deploy the chages to the DB.
 
 Add a registration with the BAS http plug-in.
@@ -158,27 +170,62 @@ Content-Type: application/json
 ### 10. Add custom logic
 
 Create a 'competition-service.js' in the srv folder.
+```js
+module.exports = (srv) => {
+  console.log(`>>>Service name: ${srv.name}, is served at path ${srv.path}`);
+
+  srv.after("READ", "Competition", (data) => {
+    const newComp = [];
+
+    data.forEach((item) => {
+      if (item.country === "Romania") {
+        item.description =
+          "10% off from the registration fee >>>" + item.description;
+      }
+
+      newComp.push(item);
+    });
+    console.log(newComp);
+    return newComp;
+  });
+};
+
+```
 
 ### 9.Common Types & Aspects @sap/cds/common
-
-### 11. Deploy to Hana Cloud.
-
-
-
-When you’re moving from the development phase to the production phase, use SAP HANA Cloud as your database.
-
-Add support for Hana with 'cds add hana' command.
-
-This configures deployment for SAP HANA to use the hdbtable and hdbview formats.
-
-Add the mta.yaml file with the command 'cds add mta'
-
-Build the application archive with command 'mbt build'
-
-Update the mta.yaml file  with 'cds add mta --force'
-
-cf deploy mta_archives/competition-corner-demo_1.0.0.mtar
 
 ### 12. Add the UI layer
 
 Add an UI layer using the Fiori Template.
+
+### 13. Deploy to Hana Cloud.
+
+When you’re moving from the development phase to the production phase, use SAP
+HANA Cloud as your database.
+
+update mta.yaml file
+
+Update the CDS section in the package.json file:
+
+```json
+ "cds": {
+    "build": {
+      "target": "."
+    },
+    "requires": {
+      "db": {
+        "kind": "hana"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
+  }
+
+```
+
+run 'hana-cli createModule'
+
+Build the project with 'cds build'
+
+Connect to Hana Cloud using the the Hana tools from BAS.

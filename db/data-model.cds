@@ -12,7 +12,7 @@ entity Competitions {
         description : String;
         city        : String;
         country     : String;
-        user        : Association to many Users ; // namaged association without a manual foreign key.
+        user        : Association to Users // CAP uses Associations to capture relationships between entities. 
 }
 
 

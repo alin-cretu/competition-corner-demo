@@ -47,8 +47,11 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql",
-        "model": "*"
+        "kind": "sqlite",
+        "model": "*",
+        "credentials": {
+          "database": "competition-corner-demo.db"
+        }
       }
     },
     "hana": {
