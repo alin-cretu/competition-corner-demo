@@ -157,7 +157,7 @@ Add a registration with the BAS http plug-in.
 
 ```json
 ### Create a competition registration
-POST http://localhost:4004/competition/Registrations
+POST http://localhost:4004/registration/Registrations
 Content-Type: application/json
 
 {
